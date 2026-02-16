@@ -81,7 +81,7 @@ f1, f2 = f_range[i], f_range[i+1]
 d1, d2 = diff[i], diff[i+1]
 omega_3dB = 2 * np.pi * (f1 - d1 * (f2 - f1) / (d2 - d1))
 
-print(f"Optimal bandwidth: {omega_3dB:.3e} rad/s")
+print(f"Optimal bandwidth: {omega_3dB:.4e} rad/s")
 
 # ============================================================================
 # Problem 5: Type-II PLL Design
@@ -133,9 +133,9 @@ def problem5(Q):
     loop_gain_phase_margin = 180 + np.angle(L[np.argmin(np.abs(20*np.log10(np.abs(L)) + 3))], deg=True)
 
     print(f"\nFor Q = {Q}:")
-    print(f"Three dB frequency: {three_dB_freq:.2e} Hz")
-    print(f"Unity gain frequency: {unity_gain_freq:.2e} Hz")
-    print(f"Loop gain phase margin: {loop_gain_phase_margin:.2f} degrees")
+    print(f"Three dB frequency: {three_dB_freq:.4e} Hz")
+    print(f"Unity gain frequency: {unity_gain_freq:.4e} Hz")
+    print(f"Loop gain phase margin: {loop_gain_phase_margin} degrees")
 
     # part d
     L_out = 10*np.log10(np.abs(H)**2 * (h0_ref + h1_ref/f**2 + h2_ref/f**4 + h3_ref/f**6) + np.abs(1 - H)**2 * (h0_vco + h1_vco/f**2 + h2_vco/f**4 + h3_vco/f**6))
@@ -159,8 +159,8 @@ def problem5(Q):
     phase_noise_integral = np.trapz(10**(L_out[idx_low:idx_high]/10), f[idx_low:idx_high])
     rms_phase_error = np.sqrt(phase_noise_integral)
     rms_random_jitter = rms_phase_error / (2 * np.pi * fosc) * 1e12 # convert to ps
-    print(f"\nRMS random jitter: {rms_random_jitter:.2f} ps")
-    print(f"RMS phase error: {rms_phase_error:.2f} degrees")
+    print(f"\nRMS random jitter: {rms_random_jitter} ps")
+    print(f"RMS phase error: {rms_phase_error} degrees")
 
 problem5(0.1)
 problem5(0.5)
