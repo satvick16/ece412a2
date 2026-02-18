@@ -88,6 +88,8 @@ print(f"Optimal bandwidth: {omega_3dB:.4e} rad/s")
 # ============================================================================
 
 def problem5(Q):
+    print(f"\nDesigning PLL for Q = {Q}...")
+
     # part a
     if Q == 0.1:
         omega_pll = Q * omega_3dB
@@ -102,6 +104,14 @@ def problem5(Q):
     omega_z = Q * omega_pll
     R = 1 / (omega_z * C1)
     C2 = C1 / C2_ratio
+    print(f"Ich: {Ich:.4e} A")
+    print(f"R: {R:.4e} Ohms")
+    print(f"C1: {C1:.4e} F")
+    print(f"C2: {C2:.4e} F")
+
+    tau = Q / omega_pll
+    print(f"Settling time constant: {tau:.4e} s")
+    assert tau < lock_time_max, "Lock time exceeds maximum allowed"
 
     # part b
     f = np.logspace(2, 8, 1000)
@@ -124,7 +134,7 @@ def problem5(Q):
     plt.title('PLL Loop Gain Phase')
     plt.tight_layout()
     plt.savefig(f'C:/Users/16474/Desktop/ece412assignment2/PLL_Q_{Q}.png', dpi=300, bbox_inches='tight')
-    print(f"\nFigure saved: PLL_Q_{Q}.png")
+    print(f"Figure saved: PLL_Q_{Q}.png")
 
     # part c
     H = 1 / (1 + L) # jitter transfer function
@@ -132,7 +142,6 @@ def problem5(Q):
     unity_gain_freq = f[np.argmin(np.abs(20*np.log10(np.abs(L))))]
     loop_gain_phase_margin = 180 + np.angle(L[np.argmin(np.abs(20*np.log10(np.abs(L)) + 3))], deg=True)
 
-    print(f"\nFor Q = {Q}:")
     print(f"Three dB frequency: {three_dB_freq:.4e} Hz")
     print(f"Unity gain frequency: {unity_gain_freq:.4e} Hz")
     print(f"Loop gain phase margin: {loop_gain_phase_margin} degrees")
@@ -149,7 +158,7 @@ def problem5(Q):
     plt.ylim([-170, -90])
     plt.tight_layout()
     plt.savefig(f'C:/Users/16474/Desktop/ece412assignment2/L_out_Q_{Q}.png', dpi=300, bbox_inches='tight')
-    print(f"\nFigure saved: L_out_Q_{Q}.png")
+    print(f"Figure saved: L_out_Q_{Q}.png")
 
     # part e: calculate the rms random jitter in ps and the rms phase error in degrees when the phase noise at the output of the PLL is integrated from 1 kHz to 100 MHz
     f_low = 1e3
@@ -159,8 +168,8 @@ def problem5(Q):
     phase_noise_integral = np.trapz(10**(L_out[idx_low:idx_high]/10), f[idx_low:idx_high])
     rms_phase_error = np.sqrt(phase_noise_integral)
     rms_random_jitter = rms_phase_error / (2 * np.pi * fosc) * 1e12 # convert to ps
-    print(f"\nRMS random jitter: {rms_random_jitter} ps")
+    print(f"RMS random jitter: {rms_random_jitter} ps")
     print(f"RMS phase error: {rms_phase_error} degrees")
 
 problem5(0.1)
-problem5(0.5)
+# problem5(0.5)
