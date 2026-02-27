@@ -197,12 +197,15 @@ def design_pll(Q):
     # -----------------------------
     mask = (f >= 1e3) & (f <= 100e6)
     phase_variance = np.trapz(10**(L_out[mask]/10), f[mask])
+
     rms_phase_rad = np.sqrt(phase_variance)
+    rms_phase_deg = rms_phase_rad * 180 / np.pi
     rms_jitter_ps = rms_phase_rad / (2*np.pi*fosc) * 1e12
 
     print(f"Unity Gain Frequency: {f_ug:.3e} Hz")
     print(f"Phase Margin: {phase_margin:.2f}°")
     print(f"3 dB Bandwidth: {f_3db:.3e} Hz")
+    print(f"RMS Phase Error: {rms_phase_deg:.3f}°")
     print(f"RMS Random Jitter: {rms_jitter_ps:.3f} ps")
 
 design_pll(0.1)
