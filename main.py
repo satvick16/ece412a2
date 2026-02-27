@@ -178,12 +178,24 @@ def design_pll(Q):
     # -----------------------------
     S_ref = 10**(phase_noise_model(f, h0_ref, 0, h2_ref, 0)/10)
     S_vco = 10**(phase_noise_model(f, h0_vco, 0, 0, h3_vco)/10)
-    L_out = 10*np.log10(np.abs(H)**2*S_ref + np.abs(1 / (1 + L))**2*S_vco)
 
+    # Individual contributions (linear)
+    S_out_ref = np.abs(H)**2 * S_ref
+    S_out_vco = np.abs(1 / (1 + L))**2 * S_vco
+
+    # Convert to dBc/Hz
+    L_out_ref = 10*np.log10(S_out_ref)
+    L_out_vco = 10*np.log10(S_out_vco)
+
+    # Combined output
+    L_out = 10*np.log10(S_out_ref + S_out_vco)
+
+    # Plot
     plt.figure()
-    plt.semilogx(f, 10*np.log10(S_ref), linewidth=2, label='S_ref')
-    plt.semilogx(f, 10*np.log10(S_vco), linewidth=2, label='S_vco')
-    plt.semilogx(f, L_out, linewidth=2, label='Combined Output')
+    plt.semilogx(f, L_out_ref, linewidth=2, label='Output PN from Reference')
+    plt.semilogx(f, L_out_vco, linewidth=2, label='Output PN from VCO')
+    plt.semilogx(f, L_out, '--', linewidth=2.5, label='Combined Output PN')
+
     plt.legend()
     plt.grid(True, which='both', alpha=0.3)
     plt.xlabel("Frequency (Hz)")
